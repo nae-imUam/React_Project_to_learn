@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Streaming App - Server</title>
+</head>
+<body>
+  <h1>Video Streaming App - Server</h1>
+  <!-- Video element to display the incoming video stream -->
+  <img id="videoElement" style="max-width: 100%;" />
+
+  <!-- Display active clients information -->
+  <div id="activeClients"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // Example: Listening for video stream from the client
+    socket.on('videoStream', (video) => {
+      // Update the image element source with the received video data
+      document.getElementById('videoElement').src = video;
+    });
+
+    // Update the list of active clients when received from the server
+    socket.on('activeClients', (clients) => {
+      const activeClientsElement = document.getElementById('activeClients');
+      activeClientsElement.innerHTML = '<h2>Active Clients</h2>';
+      
+      clients.forEach((client) => {
+        const clientInfo = document.createElement('div');
+        clientInfo.innerHTML = `<strong>ID:</strong> ${client.id}<br>
+                                <strong>IP:</strong> ${client.ip}<br>
+                                <strong>Location:</strong> ${client.location}<br><br>`;
+        activeClientsElement.appendChild(clientInfo);
+      });
+    });
+  </script>
+</body>
+</html>
